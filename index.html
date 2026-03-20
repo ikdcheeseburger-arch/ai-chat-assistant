@@ -141,7 +141,7 @@ function addMessage(text, sender) {
 // 🔐 Send message to backend (SAFE)
 async function sendToServer(message) {
     try {
-        const response = await fetch("http://127.0.0.1:3000/chat", {
+        const response = await fetch("/chat", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -149,12 +149,9 @@ async function sendToServer(message) {
             body: JSON.stringify({ message: message })
         });
 
-        if (!response.ok) {
-            throw new Error(`Server responded with ${response.status}`);
-        }
-
         const data = await response.json();
         return data;
+
     } catch (error) {
         console.error("Fetch error:", error);
         return { reply: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้" };
