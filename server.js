@@ -4,6 +4,12 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+app.get("/", (req, res) => {
+  res.send("AI server is running ✅");
+});
 
 const PORT = process.env.PORT || 3000;
 
@@ -53,6 +59,9 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
