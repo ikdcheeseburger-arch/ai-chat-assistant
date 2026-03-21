@@ -40,7 +40,7 @@ app.post("/chat", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "mistralai/mistral-7b-instruct",
+       model: "openrouter/auto",
         messages: [
           { role: "system", content: "You are a helpful AI assistant." },
           ...chatHistory.slice(-16)
