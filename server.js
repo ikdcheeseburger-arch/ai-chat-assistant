@@ -33,9 +33,10 @@ app.post("/chat", async (req, res) => {
 
     chatHistory.push({ role: "user", content: userMessage });
 const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 10000); // 10 sec
+const timeout = setTimeout(() => controller.abort(), 10000);
 
-console.log("NEW VERSION"); // ✅ put it here
+console.log("📥 message received");
+console.log("NEW VERSION");
 
 const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
   method: "POST",
@@ -43,18 +44,18 @@ const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     "Authorization": `Bearer ${process.env.OPENROUTER_KEY}`,
     "Content-Type": "application/json"
   },
+  signal: controller.signal,
   body: JSON.stringify({
-  model: "meta-llama/llama-3-8b-instruct",
-  max_tokens: 60,
-  messages: [
-    { role: "system", content: "Answer in 1 short sentence." },
-    ...chatHistory.slice(-10)
-  ]
-})
+    model: "openrouter/auto",
+    max_tokens: 100,
+    messages: [
+      { role: "system", content: "Reply briefly and clearly in 1-2 sentences." },
+      ...chatHistory.slice(-16)
+    ]
+  })
 });
 
 clearTimeout(timeout);
-
     const data = await response.json();
 
     console.log("STATUS:", response.status);
