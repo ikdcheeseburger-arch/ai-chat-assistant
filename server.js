@@ -3,9 +3,9 @@ const cors = require("cors");
 const path = require("path");
 
 console.log("KEY LENGTH:", process.env.OPENROUTER_KEY?.length);
+
 const app = express();
 
-// ✅ Safe CORS
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "OPTIONS"],
@@ -14,24 +14,16 @@ app.use(cors({
 app.options("*", cors());
 
 app.use(express.json());
-
-// ✅ Serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
 
 let chatHistory = [];
 
-// ✅ Routes
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
-});
-
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✅ AI Chat endpoint
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message?.trim();
@@ -58,9 +50,9 @@ app.post("/chat", async (req, res) => {
 
     const data = await response.json();
 
-console.log("STATUS:", response.status);
-console.log("DATA:", data);
-    console.log("FULL API RESPONSE:", data);
+    console.log("STATUS:", response.status);
+    console.log("DATA:", data);
+
     const reply = data?.choices?.[0]?.message?.content || "No response";
 
     chatHistory.push({ role: "assistant", content: reply });
