@@ -56,7 +56,7 @@ app.post("/chat", async (req, res) => {
     });
 
     const data = await response.json();
-console.log(data);
+    console.log("FULL API RESPONSE:", data);
     const reply = data?.choices?.[0]?.message?.content || "No response";
 
     chatHistory.push({ role: "assistant", content: reply });
