@@ -44,13 +44,13 @@ const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
-    model: "openrouter/auto",
-    max_tokens: 100,
-    messages: [
-      { role: "system", content: "Reply briefly and clearly in 1-2 sentences." },
-      ...chatHistory.slice(-16)
-    ]
-  })
+  model: "meta-llama/llama-3-8b-instruct",
+  max_tokens: 60,
+  messages: [
+    { role: "system", content: "Answer in 1 short sentence." },
+    ...chatHistory.slice(-10)
+  ]
+})
 });
 
 clearTimeout(timeout);
