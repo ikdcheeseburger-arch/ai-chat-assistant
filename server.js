@@ -27,35 +27,49 @@ app.get("/", (req, res) => {
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message?.trim();
+
     if (!userMessage) {
-      return res.status(400).json({ error: "No message provided" });
+      return res.status(400).json({ reply: "No message provided" });
     }
 
-    chatHistory.push({ role: "user", content: userMessage });
-const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 10000);
+    console.log("📥 message received:", userMessage);
 
-console.log("📥 message received");
-console.log("NEW VERSION");
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
-const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-  method: "POST",
-  headers: {
-    "Authorization": `Bearer ${process.env.OPENROUTER_KEY}`,
-    "Content-Type": "application/json"
-  },
-  signal: controller.signal,
-  body: JSON.stringify({
-    model: "openrouter/auto",
-    max_tokens: 100,
-    messages: [
-      { role: "system", content: "Reply briefly and clearly in 1-2 sentences." },
-      ...chatHistory.slice(-16)
-    ]
-  })
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENROUTER_KEY}`,
+        "Content-Type": "application/json"
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: "openrouter/auto",
+        max_tokens: 100,
+        messages: [
+          { role: "system", content: "Reply briefly in 1 sentence." },
+          { role: "user", content: userMessage }
+        ]
+      })
+    });
+
+    clearTimeout(timeout);
+
+    const data = await response.json();
+
+    console.log("STATUS:", response.status);
+    console.log("DATA:", data);
+
+    const reply = data?.choices?.[0]?.message?.content || "No response";
+
+    return res.json({ reply });
+
+  } catch (err) {
+    console.error("❌ SERVER ERROR:", err);
+    return res.json({ reply: "Server error (AI failed)" });
+  }
 });
-
-clearTimeout(timeout);
     const data = await response.json();
 
     console.log("STATUS:", response.status);
