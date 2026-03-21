@@ -14,7 +14,7 @@ app.options("*", cors());
 
 app.use(express.json());
 
-// ✅ Serve frontend safely
+// ✅ Serve frontend
 app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
