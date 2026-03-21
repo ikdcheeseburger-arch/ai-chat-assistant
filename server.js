@@ -1,30 +1,36 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
+// ✅ Safe CORS
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-
 app.options("*", cors());
 
 app.use(express.json());
+
+// ✅ Serve frontend safely
+app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
 
 let chatHistory = [];
 
-app.get("/health", (req, res) => { 
+// ✅ Routes
+app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
 app.get("/", (req, res) => {
-  res.send("AI server is running ✅");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// ✅ AI Chat endpoint
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message?.trim();
