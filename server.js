@@ -56,6 +56,9 @@ app.post("/chat", async (req, res) => {
     });
 
     const data = await response.json();
+
+console.log("STATUS:", response.status);
+console.log("DATA:", data);
     console.log("FULL API RESPONSE:", data);
     const reply = data?.choices?.[0]?.message?.content || "No response";
 
