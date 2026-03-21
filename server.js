@@ -47,7 +47,7 @@ app.post("/chat", async (req, res) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "openai/gpt-3.5-turbo"
+        model: "openai/gpt-3.5-turbo",
         messages: [
           { role: "system", content: "You are a helpful AI assistant." },
           ...chatHistory.slice(-16)
