@@ -32,28 +32,39 @@ app.post("/chat", async (req, res) => {
     }
 
     chatHistory.push({ role: "user", content: userMessage });
+const controller = new AbortController();
+const timeout = setTimeout(() => controller.abort(), 10000); // 10 sec
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-       model: "openrouter/auto",
-        messages: [
-          { role: "system", content: "You are a helpful AI assistant." },
-          ...chatHistory.slice(-16)
-        ]
-      })
-    });
+const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.OPENROUTER_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    model: "openrouter/auto",
+    messages: [
+      { role: "system", content: "You are a helpful AI assistant." },
+      ...chatHistory.slice(-16)
+    ]
+  }),
+  signal: controller.signal
+});
+
+clearTimeout(timeout);
 
     const data = await response.json();
 
     console.log("STATUS:", response.status);
     console.log("DATA:", data);
 
-    const reply = data?.choices?.[0]?.message?.content || "No response";
+   const reply = data.choices?.[0]?.message?.content;
+
+if (!reply) {
+  console.log("⚠️ FULL MESSAGE OBJECT:", data.choices?.[0]?.message);
+}
+
+res.json({ reply: reply || "No response" });
 
     chatHistory.push({ role: "assistant", content: reply });
 
