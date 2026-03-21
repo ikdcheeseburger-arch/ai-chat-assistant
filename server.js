@@ -35,21 +35,22 @@ app.post("/chat", async (req, res) => {
 const controller = new AbortController();
 const timeout = setTimeout(() => controller.abort(), 10000); // 10 sec
 
+console.log("NEW VERSION"); // ✅ put it here
+
 const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
   method: "POST",
   headers: {
     "Authorization": `Bearer ${process.env.OPENROUTER_KEY}`,
     "Content-Type": "application/json"
   },
- body: JSON.stringify({
-  model: "openrouter/auto",
-  max_tokens: 100,
-  messages: [
-    { role: "system", content: "Reply briefly and clearly in 1-2 sentences." },
-    ...chatHistory.slice(-16)
-  ]
-})
-  signal: controller.signal
+  body: JSON.stringify({
+    model: "openrouter/auto",
+    max_tokens: 100,
+    messages: [
+      { role: "system", content: "Reply briefly and clearly in 1-2 sentences." },
+      ...chatHistory.slice(-16)
+    ]
+  })
 });
 
 clearTimeout(timeout);
