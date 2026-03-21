@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+console.log("API KEY:", process.env.OPENROUTER_KEY);
 
 const app = express();
 
