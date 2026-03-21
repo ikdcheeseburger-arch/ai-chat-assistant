@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-console.log("API KEY:", process.env.OPENROUTER_KEY);
 
+console.log("KEY LENGTH:", process.env.OPENROUTER_KEY?.length);
 const app = express();
 
 // ✅ Safe CORS
